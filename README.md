@@ -1,1 +1,13 @@
-# volumetric-propeller
+# Volumetric Reconstruction Resolves Off-Resonance Artifacts in Static and Dynamic PROPELLER MRI
+
+Off-resonance artifacts in magnetic resonance imaging (MRI) are visual distortions that occur when the actual resonant frequencies of spins within the imaging volume differ from the expected frequencies used to encode spatial information. These discrepancies can be caused by a variety of factors, including magnetic field inhomogeneities, chemical shifts, or susceptibility differences within the tissues. 
+Such artifacts can manifest as blurring, ghosting, or misregistration of the reconstructed image, and they often compromise its diagnostic quality. We propose to resolve these artifacts by lifting the 2D MRI reconstruction problem to 3D, introducing an additional "spectral" dimension to model this off-resonance. Our approach is inspired by recent progress in modeling radiance fields, and is capable of reconstructing both static and dynamic MR images as well as separating fat and water, which is of independent clinical interest. We demonstrate our approach in the context of PROPELLER (Periodically Rotated Overlapping ParallEL Lines with Enhanced Reconstruction) MRI acquisitions, which are popular for their robustness to motion artifacts. Our method operates in a few minutes on a single GPU, and to our knowledge is the first to correct for chemical shift in gradient echo PROPELLER MRI reconstruction without additional measurements or pretraining data.
+
+### Usage notes
+
+The associated paper contains results on 4 MRI datasets, all of which are set up with a ground-truth MRI "volume" with two spatial dimensions and a spectral dimension to model chemical shift. 
+- The static synthetic dataset uses the Shepp-Logan phantom and is run using `shepp.py`
+- The static liver and breast datasets use the liver and breast MRI fat and water layers available from Dixon-RAVE (https://cai2r.net/resources/dixon-rave-matlab-code/) by downloading and running their Matlab code. Then place the resulting `fat.mat` and `water.mat` files in an accessible path, and update the load paths in `dixon_rave_abdomen.py` before running. Note that `dixon_rave_abdomen.py` runs either the liver or the breast dataset at a time; you can switch between the two by commenting two lines in and out at the beginning of the main function.
+- The dynamic synthetic dataset uses a dynamic version of the Shepp-Logan phantom from phantominator (https://pypi.org/project/phantominator/); the dataset is created on the fly before reconstruction, all within `shepp_dynamic.py`
+
+Please note that the PSNR values reported in the paper are based on the final, normalized images/videos. The values reported during training in some cases use a different normalization; they are useful for tracking the progress of training, but do not necessarily match the final values computed on normalized images.
